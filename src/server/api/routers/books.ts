@@ -1,12 +1,10 @@
 import { BookType } from "@prisma/client";
-import { connect } from "http2";
 import { z } from "zod";
 
 import {
     createTRPCRouter,
     protectedProcedure
 } from "~/server/api/trpc";
-import { prisma } from "~/server/db";
 
 export const booksRouter = createTRPCRouter({
     getAll: protectedProcedure.query(async ({ ctx }) => {

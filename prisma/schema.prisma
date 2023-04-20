@@ -40,6 +40,8 @@ model Book {
     users     User[]
     // userId String?
     type      BookType?
+    isbn      String
+    img       String?
 }
 
 model Author {

@@ -13,8 +13,9 @@ export const booksRouter = createTRPCRouter({
         return user?.books
     }),
     search: protectedProcedure
-        .input(z.object({ search: z.string().min(1) }))
+        .input(z.object({ search: z.string() }))
         .query(async ({ input, ctx }) => {
+            if (input.search.length <= 0) return;
             const books = await ctx.prisma.book.findMany({ where: { id: { contains: input.search } } })
             return books
         }),
@@ -25,7 +26,6 @@ export const booksRouter = createTRPCRouter({
             bookType: z.enum([BookType.ACTION, BookType.ADVENTURE,
             BookType.COMIC, BookType.DETECTIVE, BookType.FANTASY, BookType.HISTORICAL, BookType.HORROR]),
             img: z.string().optional(),
-
         }))
         .mutation(async ({ input, ctx }) => {
             const book = await ctx.prisma.book.create({
@@ -35,7 +35,6 @@ export const booksRouter = createTRPCRouter({
                     img: input.img,
                     authors: { connect: input.authorsIds?.map(a => ({ id: a })) || [] },
                 }
-
             })
             return book
         })

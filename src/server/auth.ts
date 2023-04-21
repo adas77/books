@@ -27,7 +27,7 @@ export const authOptions: NextAuthOptions = {
       // console.log('SESSION:', session)
       return session
     },
-    jwt: async ({ user, token }) => {
+    jwt: ({ user, token }) => {
       if (user) {
         token.uid = user.id;
       }
@@ -65,7 +65,10 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt'
   },
-  secret: process.env.NEXTAUTH_SECRET
+  secret: process.env.NEXTAUTH_SECRET,
+  // pages: {
+  //   signIn: 'signin',
+  // }
 };
 
 export const getServerAuthSession = (ctx: {

@@ -5,7 +5,6 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Search = (props: Props) => {
-
     return (
         <form>
             <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>

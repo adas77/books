@@ -12,9 +12,6 @@ type RegisterType = {
 }
 
 const Register = () => {
-    // const toastSuccess = () => toast("Registered");
-    // const toastError = () => toast("Error...");
-
     const { register, handleSubmit } = useForm<RegisterType>()
     const { mutate: registerMutate, isLoading, isError, isSuccess } = api.user.registerWithCredentials.useMutation()
 

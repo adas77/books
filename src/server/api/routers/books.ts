@@ -1,10 +1,13 @@
 import { BookType } from "@prisma/client";
+import fs from "fs";
+import { v4 as uuidv4 } from 'uuid';
 import { z } from "zod";
 
 import {
     createTRPCRouter,
     protectedProcedure
 } from "~/server/api/trpc";
+import { saveB64ToPng } from "~/utils/image";
 
 export const booksRouter = createTRPCRouter({
     getById: protectedProcedure
@@ -43,5 +46,30 @@ export const booksRouter = createTRPCRouter({
                 }
             })
             return book
-        })
+        }),
+    update: protectedProcedure.
+        input(z.object({
+            id: z.string(),
+            bookType: z.enum([BookType.ACTION, BookType.ADVENTURE,
+            BookType.COMIC, BookType.DETECTIVE, BookType.FANTASY, BookType.HISTORICAL, BookType.HORROR]).optional(),
+            img: z.string().optional(),
+            isbn: z.string().min(10).max(13).optional(),
+        }))
+        .mutation(async ({ input, ctx }) => {
+            fs.mkdirSync("./public/uploads", { recursive: true });
+            let uuid = undefined;
+            if (input.img) {
+                uuid = uuidv4();
+                saveB64ToPng(input.img, uuid)
+            }
+            const book = await ctx.prisma.book.update({
+                where: { id: input.id },
+                data: {
+                    isbn: input.isbn,
+                    type: input.bookType,
+                    img: uuid,
+                }
+            })
+            return book
+        }),
 });

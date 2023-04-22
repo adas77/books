@@ -78,6 +78,7 @@ async function run() {
             data: {
                 isbn: faker.random.alphaNumeric(13),
                 type: b.type,
+                img: faker.image.imageUrl(640, 480, 'book', true),
                 authors: {
                     connect: [{ id: randomConnect(authors) }, { id: randomConnect(authors) }, { id: randomConnect(authors) }, { id: randomConnect(authors) },]
                 },

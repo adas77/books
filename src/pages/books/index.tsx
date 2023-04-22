@@ -1,5 +1,6 @@
 import debounce from 'lodash.debounce'
 import React, { SetStateAction, useMemo, useState } from 'react'
+import Book from '~/components/Book'
 import Search from '~/components/Search'
 import { api } from '~/utils/api'
 
@@ -23,7 +24,7 @@ const Books = (props: Props) => {
     return (
         <>
             <Search onChange={debouncedChangeHandler} label={'Search Books'} />
-            {books?.map(b => <p>{b.id}</p>)}
+            {books?.map(b => <Book key={b.id} book={b} />)}
             <div>Books</div>
         </>
     )

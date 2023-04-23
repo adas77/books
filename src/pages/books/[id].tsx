@@ -1,4 +1,4 @@
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import Book from "~/components/Book";
 import { api } from "~/utils/api";
 
@@ -19,7 +19,7 @@ const BookPage: NextPage<{ uuid: string }> = ({ uuid }) => {
 
 export default BookPage
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps: GetStaticProps = (context) => {
     const uuid = context.params?.id;
     if (typeof uuid !== "string") throw new Error("no id");
     return {
@@ -30,6 +30,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = () => {
     return { paths: [], fallback: "blocking" };
 };

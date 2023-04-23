@@ -1,9 +1,9 @@
-import { Book, BookType, BookReview as PrismaBookReviewType } from '@prisma/client';
+import { Book, type BookType, type BookReview as PrismaBookReviewType } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ButtonHTMLAttributes, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useState, type ButtonHTMLAttributes } from 'react';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 
 import { toast } from 'react-toast';
 import { BookTypesArray } from '~/types/book';
@@ -11,6 +11,7 @@ import { api } from '~/utils/api';
 import { formatDate } from '~/utils/date';
 import { fetchImage } from '~/utils/image';
 import BookReview from './BookReview';
+import BookReviewCreate from './BookReviewCreate';
 import ImgUploader from './ImgUploader';
 
 
@@ -18,7 +19,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
     book: Book;
     reviews?: PrismaBookReviewType[];
     edit?: boolean;
-    refetchReviews?: () => {};
+    refetchReviews?: () => void;
 }
 
 type EditBookType = {
@@ -33,23 +34,23 @@ const Book = ({ book, reviews, edit, refetchReviews }: Props) => {
     const { register, handleSubmit } = useForm<EditBookType>()
     const { mutate: updateBookMutate } = api.books.update.useMutation({
         onError(error) {
-            toast(`Error: ${error}`)
+            toast(`Error: ${error.message}`)
         },
         onSuccess() {
             router.reload()
         },
     })
-    const [b64, setB64] = useState<string>()
-    const bookImg = fetchImage(book.img!)
+    const [b64, setB64] = useState<string[]>([])
+    const bookImg = fetchImage(book.img || '')
 
-    const onSubmit: SubmitHandler<EditBookType> = (data) => {
-        if (edit) updateBookMutate({ ...data, id: book.id, img: b64 })
+    const onSubmit: SubmitHandler<EditBookType> = (data): void => {
+        if (edit) updateBookMutate({ ...data, id: book.id, img: b64 ? b64[0] : undefined })
     }
 
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)} className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                <Link href={`/books/${book.id}`} onClick={() => { }}>
+                <Link href={`/books/${book.id}`}>
                     <input disabled={!edit} {...register('isbn')} placeholder={book.isbn} defaultValue={book.isbn} className="mb-2 text-2xl bg-inherit font-bold  text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></input>
                     <select disabled={!edit} {...register('bookType')} defaultValue={book.type} className="mb-2 text-xl bg-inherit font-bold  text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         {BookTypesArray.map(b => <option key={b} value={b}>{b}</option>)}
@@ -66,10 +67,10 @@ const Book = ({ book, reviews, edit, refetchReviews }: Props) => {
                 }
                 {edit && <button className="font-medium text-primary-600 hover:underline dark:text-primary-500">Update</button>}
             </form>
-            {reviews?.map(r => <p key={r.id}>{r.text}-======{r.userId}-----------------{r.bookId}</p>)}
-            {edit && <BookReview bookId={book.id} refetchReviews={refetchReviews} />}
+            {/* {reviews?.map(r => <p key={r.id}>{r.text}-======{r.userId}-----------------{r.bookId}---{r.imgs.concat()}</p>)} */}
+            {reviews?.map(r => <BookReview rev={r} />)}
+            {edit && <BookReviewCreate bookId={book.id} refetchReviews={refetchReviews} />}
         </>
-
     )
 }
 

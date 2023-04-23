@@ -1,6 +1,4 @@
 import { BookType } from "@prisma/client";
-import fs from "fs";
-import { v4 as uuidv4 } from 'uuid';
 import { z } from "zod";
 
 import {
@@ -56,18 +54,12 @@ export const booksRouter = createTRPCRouter({
             isbn: z.string().min(10).max(13).optional(),
         }))
         .mutation(async ({ input, ctx }) => {
-            fs.mkdirSync("./public/uploads", { recursive: true });
-            let uuid = undefined;
-            if (input.img) {
-                uuid = uuidv4();
-                saveB64ToPng(input.img, uuid)
-            }
             const book = await ctx.prisma.book.update({
                 where: { id: input.id },
                 data: {
                     isbn: input.isbn,
                     type: input.bookType,
-                    img: uuid,
+                    img: input.img ? saveB64ToPng(input.img) : undefined
                 }
             })
             return book

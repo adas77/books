@@ -66,9 +66,6 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt'
   },
   secret: process.env.NEXTAUTH_SECRET,
-  // pages: {
-  //   signIn: 'signin',
-  // }
 };
 
 export const getServerAuthSession = (ctx: {
@@ -78,6 +75,3 @@ export const getServerAuthSession = (ctx: {
   return getServerSession(ctx.req, ctx.res, authOptions);
 };
 
-export const register = () => {
-  // TODO:
-}

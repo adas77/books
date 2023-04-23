@@ -59,7 +59,7 @@ model BookReview {
     imgs      String[]
     Book      Book?    @relation(fields: [bookId], references: [id])
     bookId    String?
-    users     User?    @relation(fields: [userId], references: [id])
+    User      User?    @relation(fields: [userId], references: [id])
     userId    String?
 }
 

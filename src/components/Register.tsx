@@ -1,8 +1,8 @@
-import { SubmitHandler, useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { toast } from "react-toast";
 import 'react-toastify/dist/ReactToastify.css';
 import { api } from '~/utils/api';
-import { toast } from "react-toast";
-import { signIn } from "next-auth/react";
 
 type RegisterType = {
     email: string,
@@ -64,8 +64,7 @@ const Register = () => {
                                     <button disabled={isLoading} className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign Up</button>
                                 </p>
                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                                    <button onClick={() => signIn()} className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign In</button>
-
+                                    <button onClick={() => void signIn()} className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign In</button>
                                 </p>
                             </form>
                         </div>

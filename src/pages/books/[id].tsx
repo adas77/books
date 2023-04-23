@@ -4,7 +4,7 @@ import { api } from "~/utils/api";
 
 
 const BookPage: NextPage<{ uuid: string }> = ({ uuid }) => {
-    const { data: book, isLoading } = api.books.getById.useQuery({
+    const { data: book, isLoading, refetch } = api.books.getById.useQuery({
         id: uuid
     })
 
@@ -13,7 +13,7 @@ const BookPage: NextPage<{ uuid: string }> = ({ uuid }) => {
     }
 
     return (
-        <Book edit book={book} />
+        <Book edit book={book} reviews={book.reviews} refetchReviews={refetch} />
     )
 }
 

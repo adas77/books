@@ -11,7 +11,22 @@ export const booksRouter = createTRPCRouter({
     getById: protectedProcedure
         .input(z.object({ id: z.string() }))
         .query(async ({ input, ctx }) => {
-            const book = await ctx.prisma.book.findUnique({ where: { id: input.id }, include: { reviews: true } })
+            const book = await ctx.prisma.book.findUnique(
+                {
+                    where: { id: input.id }, include: {
+                        reviews: {
+                            include: {
+                                User: {
+                                    select: {
+                                        image: true,
+                                        name: true,
+                                        email: true,
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
             return book;
         }),
     getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -23,7 +38,9 @@ export const booksRouter = createTRPCRouter({
         .input(z.object({ search: z.string() }))
         .query(async ({ input, ctx }) => {
             if (input.search.length <= 0) return null;
-            const books = await ctx.prisma.book.findMany({ where: { id: { contains: input.search } } })
+            const books = await ctx.prisma.book.findMany({
+                where: { id: { contains: input.search } }
+            })
             return books
         }),
     create: protectedProcedure.

@@ -9,7 +9,7 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: ['loremflickr.com']
+    domains: ['loremflickr.com', 'cloudflare-ipfs.com']
   }
 };
 export default config;

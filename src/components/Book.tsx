@@ -14,10 +14,11 @@ import BookReview from './BookReview';
 import BookReviewCreate from './BookReviewCreate';
 import ImgUploader from './ImgUploader';
 
+export type CustomReviews = PrismaBookReviewType & { authorImg: string | undefined, authorName: string | undefined | null, authorEmail: string | undefined };
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
     book: Book;
-    reviews?: PrismaBookReviewType[];
+    reviews?: CustomReviews[];
     edit?: boolean;
     refetchReviews?: () => void;
 }
@@ -67,9 +68,17 @@ const Book = ({ book, reviews, edit, refetchReviews }: Props) => {
                 }
                 {edit && <button className="font-medium text-primary-600 hover:underline dark:text-primary-500">Update</button>}
             </form>
-            {/* {reviews?.map(r => <p key={r.id}>{r.text}-======{r.userId}-----------------{r.bookId}---{r.imgs.concat()}</p>)} */}
-            {reviews?.map(r => <BookReview rev={r} />)}
-            {edit && <BookReviewCreate bookId={book.id} refetchReviews={refetchReviews} />}
+
+            {edit &&
+                <>
+                    <p className='mt-14 mb-12 text-bold text-7xl text-center text-slate-700'>Recenzje</p>
+                    <div className='grid grid-cols-1 gap-4'>
+                        {reviews?.map(r => <BookReview rev={r} />)}
+                    </div>
+                    <br />
+                    <BookReviewCreate bookId={book.id} refetchReviews={refetchReviews}
+                    />
+                </>}
         </>
     )
 }
